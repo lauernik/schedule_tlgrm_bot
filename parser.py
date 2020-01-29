@@ -1,0 +1,2 @@
+def schedule(group):
+    pass
