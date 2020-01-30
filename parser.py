@@ -24,9 +24,10 @@ def code_group(group):
         )
     json_response = response.json()
     # Проверяем, что группа введена корректно
-    if json_response['suggestions'] and len(json_response['suggestions']) == 1:
-        data_value = json_response['suggestions'][0]['data']
-        return str(data_value)
+    if json_response:
+        if len(json_response['suggestions']) == 1:
+            data_value = json_response['suggestions'][0]['data']
+            return str(data_value)
 
 
 # Парсим страницу
@@ -50,13 +51,13 @@ def tableDataText(table):
         for td in tr.find_all(['b']):  # Ключ - день
             dict_keys.append(td.get_text(strip=True))
             sch_dict.update({dict_keys[-1]: []})
+        # Название предмета
+        row += [' '.join(td.get_text(strip=True).split())
+                for td in tr.find_all(['dd'],)]
         # Время
         row += [td.get_text(strip=True) for td in tr.find_all(
             [],
             'shedule-weekday-time')]
-        # Название предмета
-        row += [' '.join(td.get_text(strip=True).split())
-                for td in tr.find_all(['dd'],)]
         # Учитель
         row += [td.get_text(strip=True) for td in tr.find_all(
             ['span'], 'teacher')]
