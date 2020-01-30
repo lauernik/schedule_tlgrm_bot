@@ -1,6 +1,7 @@
 # Бот предоставляет расписание студентам УРФУ
 # Bot present schedule for UrFU students
-# Version 0.1
+# @schedule_urfu_tlgrm
+# Version 0.1.1
 
 # Import
 from telegram import (
@@ -92,9 +93,9 @@ def schedule_messages(update, context, schedule, number):
             if values:
                 for value in values:
                     message += value + '\n'
-                message += '\nwhat`s is goin` on?\n'
             else:
                 message += 'Свободный день'
+            update.message.reply_text(message)
             i += 1
         else:
             break
