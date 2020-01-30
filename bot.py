@@ -52,7 +52,7 @@ def group(update, context):
     # logger.info(update.message.reply_text(group_number))
     schedule_get = schedule(group_number)
     if schedule_get is not None:
-        pass
+        update.message.reply_text("Есть такая группа)")
     else:
         update.message.reply_text("Not such group number can be found")
         return GROUP_NUMBER
