@@ -106,6 +106,10 @@ def cancel(update, context):
     return ConversationHandler.END
 
 
+def error(bot, update, error):
+    logger.warning('Update "%s" caused error "%s"', update, error)
+
+
 def main():
     # start bot
     updater = Updater(
@@ -114,6 +118,7 @@ def main():
 
     dispatcher = updater.dispatcher
 
+    # Adding handlers
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('group', insert_info)],
         states={
@@ -122,13 +127,14 @@ def main():
         fallbacks=[CommandHandler('cancel', cancel)]
         )
 
-    # Adding handlers
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(conv_handler)
+    dispatcher.add_error_handler(error)
 
     updater.start_polling()
 
     updater.idle()
 
 
-main()
+if __name__ == "__main__":
+    main()
