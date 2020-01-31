@@ -1,7 +1,7 @@
 # Бот предоставляет расписание студентам УРФУ
 # Bot present schedule for UrFU students
 # @schedule_urfu_tlgrm
-# Version 0.2
+# Version 0.2.1
 
 # Import
 from telegram import (
@@ -12,6 +12,7 @@ import logging
 from parser import schedule
 from functools import wraps
 import os
+import psycopg2
 
 # Logging
 logging.basicConfig(
@@ -55,6 +56,7 @@ def start(update, context):
         chat_id=update.effective_chat.id,
         text=greetin,
         reply_markup=keyboard_markup)
+    db_user_add(update, context)
 
 
 def insert_info(update, context):
@@ -111,6 +113,39 @@ def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
 
 
+def conn_db():
+    # Подключаем базу данных
+    DATABASE_URL = os.environ['DATABASE_URL']
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    return conn
+
+
+# Добавляем юзернейма в базу данных
+def db_user_add(update, context):
+    user_id = update.message.chat.id
+    con = conn_db()
+    cur = con.cursor()
+    # Проверка на присутствие айди в базе данных
+    if cur.execute("SELECT user_id FROM users WHERE user_id like %s",
+        (user_id)):
+        pass
+    # Если нет, то добавляем
+    else:
+        cur.execute("INSERT INTO users (user_id) VALUES (%s)",
+                (user_id))
+        cur.commit()
+    cur.close()
+    conn.close()
+
+
+def db_number_add(update, context):
+    user_id = update.message.chat.id
+
+
+def db_number_get(update, context):
+    pass
+
+
 def main():
     # start bot
     TOKEN = '986948899:AAFBWnW1RNi4bTo84GRlz52NXccia_e-Q-Y'
@@ -122,7 +157,6 @@ def main():
     updater = Updater(
         token=TOKEN,
         use_context=True)
-
     dispatcher = updater.dispatcher
 
     # Adding handlers
