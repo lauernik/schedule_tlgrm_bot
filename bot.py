@@ -1,7 +1,7 @@
 # Бот предоставляет расписание студентам УРФУ
 # Bot present schedule for UrFU students
 # @schedule_urfu_tlgrm
-# Version 0.1.1
+# Version 0.2
 
 # Import
 from telegram import (
@@ -11,6 +11,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
 import logging
 from parser import schedule
 from functools import wraps
+import os
 
 # Logging
 logging.basicConfig(
@@ -112,8 +113,14 @@ def error(bot, update, error):
 
 def main():
     # start bot
+    TOKEN = '986948899:AAFBWnW1RNi4bTo84GRlz52NXccia_e-Q-Y'
+    NAME = 'evening-plateau-67761'
+
+    # Порт даёт Heroku
+    PORT = os.environ.get('PORT')
+
     updater = Updater(
-        token='986948899:AAFBWnW1RNi4bTo84GRlz52NXccia_e-Q-Y',
+        token=TOKEN,
         use_context=True)
 
     dispatcher = updater.dispatcher
@@ -131,8 +138,15 @@ def main():
     dispatcher.add_handler(conv_handler)
     dispatcher.add_error_handler(error)
 
-    updater.start_polling()
+    # updater.start_polling()  # Старт опроса
 
+    # Конфигурация вебхука
+    updater.start_webhook(listen='0.0.0.0',
+                          port=int(PORT),
+                          url_path=TOKEN)
+    updater.bot.setWebhook("https://{}.herokuapp.com/{}".format(NAME, TOKEN))
+
+    # Используется при завершении
     updater.idle()
 
 
