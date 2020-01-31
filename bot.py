@@ -123,10 +123,11 @@ def conn_db():
 # Добавляем юзернейма в базу данных
 def db_user_add(update, context):
     user_id = update.message.chat.id
+    logger.info(user_id)
     con = conn_db()
     cur = con.cursor()
     # Проверка на присутствие айди в базе данных
-    if cur.execute("SELECT user_id FROM users WHERE user_id like %s",
+    if cur.execute("SELECT user_id FROM users WHERE user_id = %s",
         (user_id)):
         pass
     # Если нет, то добавляем
