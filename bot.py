@@ -125,16 +125,16 @@ def db_user_add(update, context):
     user_id = update.message.chat.id
     con = conn_db()
     cur = con.cursor()
-    logger.info(cur)
+    # logger.info(cur)
     # Проверка на присутствие айди в базе данных
     """if cur.execute("SELECT user_id FROM users WHERE user_id = %s", (user_id)):
         pass
     # Если нет, то добавляем
     else:"""
     cur.execute("INSERT INTO users VALUES (%s)",(user_id,))
-    cur.commit()
+    con.commit()
     cur.close()
-    conn.close()
+    con.close()
 
 
 def db_number_add(update, context):
