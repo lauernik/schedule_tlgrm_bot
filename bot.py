@@ -131,7 +131,6 @@ def db_user_add(update, context):
     con = conn_db()
     cur = con.cursor()
     cur.execute("SELECT user_id FROM users WHERE user_id = %s;", (user_id,))
-    # logger.info(cur)
     # Проверка на присутствие айди в базе данных
     if cur.fetchone():
         pass
@@ -162,7 +161,8 @@ def db_number_get(update, context):
     cur = con.cursor()
     cur.execute("SELECT last_number FROM users where user_id = (%s);",
                 (user_id,))
-    group_number = cur.fetchone()
+    group_number_tuple = cur.fetchone()
+    group_number = group_number_tuple[0]
     cur.close()
     con.close()
     return group_number
