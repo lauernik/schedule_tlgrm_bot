@@ -47,7 +47,7 @@ def keyboard(button=True):
         keyboard = ([button_1], [button_2])
     else:
         keyboard = [button_1]
-    return ReplyKeyboardMarkup([keyboard])
+    return ReplyKeyboardMarkup(keyboard)
 
 
 def start(update, context):
