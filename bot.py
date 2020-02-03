@@ -46,7 +46,7 @@ def keyboard(button=True):
     if button:
         keyboard = ([button_1], [button_2])
     else:
-        keyboard = [button_1]
+        keyboard = ([button_1])
     return ReplyKeyboardMarkup(keyboard)
 
 
@@ -59,7 +59,7 @@ def start(update, context):
         reply_markup=keyboard_markup)
     db_user_add(update, context)
 
-
+# Выводит сообщение юзеру и убирает кастомную клавиатуру
 def insert_info(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
