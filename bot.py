@@ -44,7 +44,9 @@ def keyboard(button=True):
     button_2 = KeyboardButton('/last')
     keyboard = [button_1]
     if button:
-        keyboard.append(button_2)
+        keyboard = ([button_1], [button_2])
+    else:
+        keyboard = [button_1]
     return ReplyKeyboardMarkup([keyboard])
 
 
