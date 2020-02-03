@@ -42,12 +42,10 @@ def send_action(action):
 def keyboard(button=True):
     button_1 = KeyboardButton('Новый поиск')
     button_2 = KeyboardButton('Повтор')
-    keyboard = [button_1]
     if button:
-        keyboard = ([button_1], [button_2])
+        return ReplyKeyboardMarkup(([button_1], [button_2]))
     else:
-        keyboard = ([button_1])
-    return ReplyKeyboardMarkup(keyboard)
+        return ReplyKeyboardMarkup([button_1])
 
 
 def start(update, context):
