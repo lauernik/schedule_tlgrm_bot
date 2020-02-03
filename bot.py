@@ -40,8 +40,8 @@ def send_action(action):
 
 
 def keyboard(button=True):
-    button_1 = KeyboardButton('/group')
-    button_2 = KeyboardButton('/last')
+    button_1 = KeyboardButton('Новый поиск')
+    button_2 = KeyboardButton('Повтор')
     keyboard = [button_1]
     if button:
         keyboard = ([button_1], [button_2])
@@ -181,7 +181,7 @@ def last(update, context):
 
 
 def text_for_search():
-    return 'Для нового поиска нажми /group или /last'
+    return 'Нажми "Повтор" либо "Новый поиск" для ввода другой группы'
 
 
 def main():
@@ -199,7 +199,7 @@ def main():
 
     # Adding handlers
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('group', insert_info)],
+        entry_points=[MessageHandler(Filters.regex(r'Новый поиск'), insert_info)],
         states={
             GROUP_NUMBER: [MessageHandler(Filters.text, group)]
         },
@@ -209,7 +209,7 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(conv_handler)
     dispatcher.add_error_handler(error)
-    dispatcher.add_handler(CommandHandler('last', last))
+    dispatcher.add_handler(MessageHandler(Filters.regex(r'Повтор'), last))
 
     # updater.start_polling()  # Старт опроса
 
