@@ -43,9 +43,11 @@ def keyboard(button=True):
     button_1 = KeyboardButton('Новый поиск')
     button_2 = KeyboardButton('Повтор')
     if button:
-        return ReplyKeyboardMarkup(([button_1], [button_2]))
+        return ReplyKeyboardMarkup([[button_1],
+                                    [button_2]],
+                                    resize_keyboard=True)
     else:
-        return ReplyKeyboardMarkup([[button_1]])
+        return ReplyKeyboardMarkup([[button_1]], resize_keyboard=True)
 
 
 def start(update, context):
