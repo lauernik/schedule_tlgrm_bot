@@ -74,10 +74,11 @@ def group(update, context):
     schedule_get = schedule(group_number)
     if schedule_get is not None:
         schedule_messages(update, context, schedule_get, group_number)
+        db_number_add(update, context, group_number)
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Для нового поиска нажми /group",
-            reply_markup=keyboard(button=False))
+            text=text_for_search(),
+            reply_markup=keyboard())
     else:
         update.message.reply_text("Такая группа не найдена, попробуй ещё раз)")
         return GROUP_NUMBER
@@ -132,18 +133,48 @@ def db_user_add(update, context):
         pass
     # Если нет, то добавляем
     else:
-        cur.execute("INSERT INTO users VALUES (%s)",(user_id,))
+        cur.execute("INSERT INTO users VALUES (%s);",(user_id,))
         con.commit()
     cur.close()
     con.close()
 
 
-def db_number_add(update, context):
+#
+def db_number_add(update, context, last_number):
     user_id = update.message.chat.id
+    con = conn_db()
+    cur = con.cursor()
+    cur.execute("UPDATE users SET last_number = (%s) WHERE user_id = (%s);",
+                (last_number, user_id))
+    con.commit()
+    cur.close()
+    con.close()
 
 
 def db_number_get(update, context):
-    pass
+    user_id = update.message.chat.id
+    con = conn_db()
+    cur = con.cursor()
+    cur.execute("SELECT last_number FROM users where user_id = (%s);",
+                (user_id,))
+    group_number = cur.fetchone()
+    cur.close()
+    con.close()
+    return group_number
+
+
+def last(update, context):
+    group_number = db_number_get(update, context)
+    schedule_get = schedule(group_number)
+    schedule_messages(update, context, schedule_get, group_number)
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text_for_search(),
+        reply_markup=keyboard())
+
+
+def text_for_search():
+    return 'Для нового поиска нажми /group или /last'
 
 
 def main():
@@ -171,6 +202,7 @@ def main():
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(conv_handler)
     dispatcher.add_error_handler(error)
+    dispatcher.add_handler(CommandHandler('last', last))
 
     # updater.start_polling()  # Старт опроса
 
