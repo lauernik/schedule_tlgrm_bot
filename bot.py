@@ -1,7 +1,7 @@
 # Бот предоставляет расписание студентам УРФУ
 # Bot present schedule for UrFU students
 # @schedule_urfu_tlgrm
-# Version 0.2.1
+# Version 0.3
 
 # Import
 from telegram import (
@@ -25,9 +25,8 @@ GROUP_NUMBER = 0
 
 # Define command for Handlers and other
 
-
+# Декоратор, для эффекта "печает..."
 def send_action(action):
-
     def decorator(func):
         @wraps(func)
         def command_func(update, context, *args, **kwargs):
@@ -42,7 +41,7 @@ def send_action(action):
 
 def keyboard(button=True):
     button_1 = KeyboardButton('/group')
-    button_2 = KeyboardButton('/last')  # Предыдущая введеная группа (будущее)
+    button_2 = KeyboardButton('/last')
     keyboard = [button_1]
     if button:
         keyboard.append(button_2)
@@ -67,10 +66,11 @@ def insert_info(update, context):
     return GROUP_NUMBER
 
 
+# Функция показывает расписание,
+# работает, когда вводится новая группа
 @send_action(ChatAction.TYPING)
 def group(update, context):
     group_number = update.message.text
-    # logger.info(update.message.reply_text(group_number))
     schedule_get = schedule(group_number)
     if schedule_get is not None:
         schedule_messages(update, context, schedule_get, group_number)
@@ -85,6 +85,7 @@ def group(update, context):
     return ConversationHandler.END
 
 
+# Вывод расписания сообщениями
 def schedule_messages(update, context, schedule, number):
     i = 0
     update.message.reply_text(
@@ -105,6 +106,7 @@ def schedule_messages(update, context, schedule, number):
             break
 
 
+# Переход в начало, необходима для ConversationHandler`а
 def cancel(update, context):
     start(update, context)
     return ConversationHandler.END
@@ -139,7 +141,7 @@ def db_user_add(update, context):
     con.close()
 
 
-#
+# Добавляем номер группы к юзеру
 def db_number_add(update, context, last_number):
     user_id = update.message.chat.id
     con = conn_db()
@@ -151,6 +153,7 @@ def db_number_add(update, context, last_number):
     con.close()
 
 
+# Получаем номер группы
 def db_number_get(update, context):
     user_id = update.message.chat.id
     con = conn_db()
@@ -163,6 +166,8 @@ def db_number_get(update, context):
     return group_number
 
 
+# Расписание для предыдущей группы, берется из базы данных
+@send_action(ChatAction.TYPING)
 def last(update, context):
     group_number = db_number_get(update, context)
     schedule_get = schedule(group_number)
