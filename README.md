@@ -12,3 +12,5 @@
 - psycopg2
 
 Деплой на Heroku, использована база данных PostgreSQL
+
+Бот доступен по ссылке: [@schedule_urfu_tlgrmbot](https://t.me/schedule_urfu_tlgrmbot)
