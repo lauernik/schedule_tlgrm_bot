@@ -13,6 +13,7 @@ from parser import schedule
 from functools import wraps
 import os
 import psycopg2
+from boto.s3.connection import S3Connection
 
 # Logging
 logging.basicConfig(
@@ -185,9 +186,10 @@ def text_for_search():
 
 
 def main():
+    s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
     # start bot
-    TOKEN = '986948899:AAFBWnW1RNi4bTo84GRlz52NXccia_e-Q-Y'
-    NAME = 'evening-plateau-67761'
+    TOKEN = os.environ.get('TLGRM_API_KEY_SCHDL')
+    NAME = os.environ.get('APP_SCHDL')
 
     # Порт даёт Heroku
     PORT = os.environ.get('PORT')
